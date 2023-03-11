@@ -76,17 +76,17 @@ export class PolyLine {
             //         |
             //         C
 
-            let svABBC;  //两个法向量相加得到B点切线的法向量的单位向量
+            let vBB1;  //两个法向量相加得到B点切线的法向量的单位向量
             //向量AB和B点切线的法向量的夹角，后面需要用它来计算平移的距离
             let rad = Math.PI / 2;
             if (!A || A.equal(B)) {
                 //第一个点，即没有A点
                 const vBC = new Vector(B, C).normalize();
-                svABBC = new Vector(-vBC.y, vBC.x);
+                vBB1 = new Vector(-vBC.y, vBC.x);
             } else if (!C || C.equal(B)) {
                 //最后一个点，即没有C点
                 const vAB = new Vector(A, B).normalize();
-                svABBC = new Vector(-vAB.y, vAB.x);
+                vBB1 = new Vector(-vAB.y, vAB.x);
             } else {
                 const vAB = new Vector(A, B).normalize();         //向量AB单位化
                 const verticalVAB = new Vector(-vAB.y, vAB.x);    //AB的法向量
@@ -94,15 +94,15 @@ export class PolyLine {
                 const vBC = new Vector(B, C).normalize();         //向量BC单位化
                 const verticalVBC = new Vector(-vBC.y, vBC.x);    //BC的法向量
 
-                svABBC = verticalVAB.add(verticalVBC).normalize();  //两个法向量相加得到B点切线的法向量再单位化
+                vBB1 = verticalVAB.add(verticalVBC).normalize();  //两个法向量相加得到B点切线的法向量再单位化
 
-                rad = vAB.radians(svABBC);                          //计算平移的角度
+                rad = vAB.radians(vBB1);                          //计算平移的角度
             }
 
 
             //由B点按照切线的法向量方向平移计算出B1、B2两点
-            const B1 = new Vector(B).add(svABBC.mul(halfOfLineWidth / Math.sin(rad)));
-            const B2 = new Vector(B).add(svABBC.mul(-halfOfLineWidth / Math.sin(rad)));
+            const B1 = new Vector(B).add(vBB1.mul(halfOfLineWidth / Math.sin(rad)));
+            const B2 = new Vector(B).add(vBB1.mul(-halfOfLineWidth / Math.sin(rad)));
 
             stripTrianglePoints.push(B1.pointValue, B2.pointValue);
         }
